@@ -2,6 +2,7 @@
 
 <h1>Prefix-Adaptive Block Diffusion for Efficient Document Recognition</h1>
 
+[![arXiv](https://img.shields.io/badge/arXiv-DiffusionVL-b31b1b.svg)](https://arxiv.org/pdf/2605.16861) [![Hugging Face Paper](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Paper-red)](https://huggingface.co/MingxuChai/PA-BDM) <a href="https://github.com/SII-sc22mc/PA-BDM"><img src="https://img.shields.io/badge/GitHub-Repository-black?logo=github" alt="GitHub"></a> <a href="https://huggingface.co/collections/hustvl/diffusionvl"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Models-blue" alt="Hugging Face"></a>
 
 ## 🚀 Get Started
 
