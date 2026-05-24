@@ -12,7 +12,7 @@
 | :--- | :--- |
 | [Installation](docs/INSTALLATION.md) | Environment setup, data and model preparation |
 | [Training & Evaluation](docs/TRAINING_EVALUATION.md) | Comming Soon |
-| [Inference]() | Please refer to infer.ipynb |
+| [Inference](./infer.ipynb) | Please refer to [infer.ipynb](./infer.ipynb) |
 
 
 ## ❤️ Acknowledgements
