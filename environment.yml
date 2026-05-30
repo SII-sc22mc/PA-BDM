@@ -1,0 +1,15 @@
+name: pa-bdm
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - pip
+  - pytorch=2.6.0
+  - torchvision=0.21.0
+  - torchaudio=2.6.0
+  - pytorch-cuda=12.4
+  - pip:
+      - -r requirements.txt

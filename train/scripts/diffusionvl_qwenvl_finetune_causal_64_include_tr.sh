@@ -13,32 +13,27 @@ export NCCL_DEBUG_SUBSYS=ALL
 # TODO: Configure these paths before running
 # ============================================
 
-# Wandb configuration (optional, set report_to="none" to disable)
-export WANDB_MODE=offline
-export WANDB_DIR="./wandb"  # TODO: Set your wandb directory
-export WANDB_PROJECT="diffusionvl"
+# Wandb configuration (optional, set REPORT_TO=none to disable)
+export WANDB_MODE="${WANDB_MODE:-offline}"
+export WANDB_DIR="${WANDB_DIR:-./wandb}"
+export WANDB_PROJECT="${WANDB_PROJECT:-pa-bdm}"
+REPORT_TO="${REPORT_TO:-wandb}"
 
-# Model checkpoint path - Qwen2.5-VL model
-# TODO: Download Qwen2.5-VL-7B-Instruct from HuggingFace and convert to DiffusionVL format set the path
-PRETRAINED_CHECKPOINT="/inspire/hdd/global_user/chaimingxu-240108540141/models/DiffusionVL-Qwen2.5VL-3B-causal"
+# Model checkpoint path. Convert Qwen2.5-VL to DiffusionVL-QwenVL format first.
+PRETRAINED_CHECKPOINT="${PRETRAINED_CHECKPOINT:-}"
 
-# Training data paths
-# TODO: Set your training data paths
-# DATA_PATH="/inspire/hdd/global_user/chaimingxu-240108540141/Diffusion/LaViDa/data/pretrain/json/UniMer_filter_len_1000.json"
-# IMAGE_FOLDER="/inspire/hdd/global_user/chaimingxu-240108540141/Diffusion/LaViDa/data/pretrain/UniMer"
-DATA_PATH=/inspire/hdd/global_user/chaimingxu-240108540141/Diffusion/data_yaml/fr_ocr_tr_0507.yaml
-IMG_PATH=/inspire/hdd/global_user/chaimingxu-240108540141/Diffusion/LaViDa/data/pretrain
+# Training data paths. DATA_PATH can be a JSON/JSONL file or a YAML mixture file.
+DATA_PATH="${DATA_PATH:-}"
+IMAGE_FOLDER="${IMAGE_FOLDER:-${IMG_PATH:-}}"
 
 # Output directory
-# TODO: Set your output directory
-OUTPUT_DIR="./outputs"
+OUTPUT_DIR="${OUTPUT_DIR:-./outputs}"
 
 # ============================================
 # Training configuration
 # ============================================
-# we use 4 node and 8 gpu per node and global batch size is 256
-# num_node=$1
-# gpu_num=$2
+# Effective global batch size is:
+# num_node * gpu_num * per_device_train_batch_size * gradient_accumulation_steps.
 num_node=${1:-1}
 gpu_num=${2:-4}
 custom_run_name=${3:-"20260508-CSL-64"}
@@ -58,10 +53,24 @@ echo "gpu_num ${gpu_num}"
 echo "num_node ${num_node}"
 echo "BD3LM Block Size: ${BD3LM_BLOCK_SIZE}"
 
+if [[ -z "${PRETRAINED_CHECKPOINT}" ]]; then
+    echo "ERROR: PRETRAINED_CHECKPOINT is required." >&2
+    exit 1
+fi
+
+if [[ -z "${DATA_PATH}" ]]; then
+    echo "ERROR: DATA_PATH is required." >&2
+    exit 1
+fi
+
 LLM_VERSION=${PRETRAINED_CHECKPOINT}
 VISION_MODEL_VERSION=${PRETRAINED_CHECKPOINT}
 
 echo "Checkpoint: ${PRETRAINED_CHECKPOINT}"
+echo "Data path: ${DATA_PATH}"
+echo "Image folder: ${IMAGE_FOLDER:-<from data file or absolute paths>}"
+echo "Output dir: ${OUTPUT_DIR}"
+echo "Report to: ${REPORT_TO}"
 
 PROMPT_VERSION=qwen_2_5
 BASE_RUN_NAME=${custom_run_name}
@@ -107,7 +116,7 @@ torchrun --nproc_per_node=${gpu_num} --nnodes=${num_node} --master_addr=${MASTER
     --gradient_checkpointing True \
     --dataloader_num_workers 12 \
     --lazy_preprocess True \
-    --report_to wandb \
+    --report_to ${REPORT_TO} \
     --dataloader_drop_last True \
     --attn_implementation eager \
     --use_conversation_mask False \
