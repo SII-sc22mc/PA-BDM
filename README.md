@@ -161,24 +161,6 @@ bash run_train.sh
 
 The paper reports experiments with PA-BDM-1.2B/3B, CSL and PPC confidence threshold `0.95`, and maximum candidate block size commonly set to `32` unless otherwise specified. This repository's `causal_64_include_tr` training script defaults to `BD3LM_BLOCK_SIZE=64`; set `BD3LM_BLOCK_SIZE=32` if you want the paper's default block-size setting.
 
-## Evaluation
-
-Evaluation scripts are provided under `eval/scripts/`. For DiffusionVL-QwenVL/PA-BDM:
-
-```bash
-cd eval
-bash scripts/diffusionvl_qwenvl.sh
-```
-
-Before running, edit the model paths, output path, task list, GPU count, block size, and denoising steps in the script. The paper reports Edit Distance for text, CDM for formulas, TEDS for tables, and graph F1 for diagrams.
-
-## Common Notes
-
-- Training requires NVIDIA GPUs with sufficient memory. The paper measures inference speed on a single RTX 4090 with batch size 1, and trains larger runs on H100-class GPUs.
-- `model_max_length` must be divisible by `BD3LM_BLOCK_SIZE`; the training code checks this at startup.
-- Use `REPORT_TO=none` to disable Weights & Biases logging, or set `WANDB_MODE=offline` for offline logs.
-- If image paths in JSON are relative, either pass `IMAGE_FOLDER` or use `image_root` in the YAML file.
-- `infer.ipynb` and `main.py` use the same generation parameters: `gen_length`, `steps`, `temperature`, and `confidence_threshold`.
 
 ## Documentation
 
